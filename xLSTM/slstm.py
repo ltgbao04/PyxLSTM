@@ -50,6 +50,8 @@ class sLSTM(nn.Module):
         Returns:
             tuple: Output sequence and final hidden state.
         """
+        print(f"input seq size: {input_seq.size()}")
+        print(f"input seq: {inut_seq}")
         batch_size, seq_length, _ = input_seq.size()
         
         if hidden_state is None:
