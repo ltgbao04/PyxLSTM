@@ -53,10 +53,10 @@ class sLSTM(nn.Module):
         # if input_seq.dim() == 4:
         #         print("squeezing")
         #         input_seq = input_seq.squeeze(3)
-        input_seq = input_seq.squeeze(3)
-        print(f"input seq size: {input_seq.size()}")
-        print(f"input seq: {input_seq}")
-        batch_size, seq_length, _ = input_seq.size()
+        # input_seq = input_seq.squeeze(3)
+        # print(f"input seq size: {input_seq.size()}")
+        # print(f"input seq: {input_seq}")
+        batch_size, seq_length, _, _ = input_seq.size()
         
         if hidden_state is None:
             hidden_state = self.init_hidden(batch_size)
