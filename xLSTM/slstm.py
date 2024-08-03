@@ -118,7 +118,15 @@ class sLSTMCell(nn.Module):
         Returns:
             tuple: New hidden state and cell state.
         """
+
         h, c = hx
+        
+        # Debugging shapes
+        print(f"Input shape: {input.shape}")
+        print(f"Weight_ih shape: {self.weight_ih.shape}")
+        print(f"Weight_hh shape: {self.weight_hh.shape}")
+        print(f"h shape: {h.shape}")
+        
         gates = F.linear(input, self.weight_ih, self.bias) + F.linear(h, self.weight_hh)
         
         i, f, g, o = gates.chunk(4, 1)
