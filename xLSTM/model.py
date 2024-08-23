@@ -126,6 +126,9 @@ class xLSTM(nn.Module):
         
         for i, block in enumerate(self.blocks):
             output_seq, hidden_states[i] = block(output_seq, hidden_states[i])
+            # Check for NaN values after each block
+            if torch.isnan(output_seq).any():
+                print(f"NaN detected after block {i+1}!")
         
         output_seq = self.output_layer(output_seq[:, -1, :])  # Taking the output of the last time step
         if torch.isnan(output_seq).any():
