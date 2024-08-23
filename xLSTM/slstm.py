@@ -60,6 +60,8 @@ class sLSTM(nn.Module):
         outputs = []
         for t in range(seq_length):
             x = input_seq[:, t, :]
+            if torch.isnan(x).any():
+                print("slstm.py: nan detected in x")
             for layer_idx, layer in enumerate(self.layers):
                 h, c = hidden_state[layer_idx]
                 h, c = layer(x, (h, c))
