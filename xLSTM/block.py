@@ -63,8 +63,18 @@ class xLSTMBlock(nn.Module):
             tuple: Output sequence and final hidden state.
         """
         lstm_output, hidden_state = self.lstm(input_seq, hidden_state)
+        if torch.isnan(lstm_output).any():
+                print(f"NaN detected lstm_output!")
         output = self.activation(lstm_output)
+        if torch.isnan(output).any():
+                print(f"NaN detected in output = self.activation(lstm_output)!")
         output = self.norm(output)
+        if torch.isnan(output).any():
+                print(f"NaN detected in output = self.norm(output)!")
         output = self.proj(output)
+        if torch.isnan(output).any():
+                print(f"NaN detected in output = self.proj(output)!")
         output = self.dropout_layer(output + input_seq)  # Residual connection
+        if torch.isnan(output).any():
+                print(f"NaN detected in output = self.dropout_layer(output + input_seq)!")
         return output, hidden_state
