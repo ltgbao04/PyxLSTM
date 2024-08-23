@@ -70,7 +70,7 @@ class sLSTM(nn.Module):
                 hidden_state[layer_idx] = (h, c)
                 x = self.dropout_layer(h) if layer_idx < self.num_layers - 1 else h
                 if torch.isnan(x).any():
-                    print("slstm.py: nan detected in x)
+                    print("slstm.py: nan detected in x")
             outputs.append(x)
 
         if torch.isnan(torch.stack(outputs, dim=1)).any():
