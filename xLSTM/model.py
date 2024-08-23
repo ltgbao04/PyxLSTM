@@ -128,6 +128,8 @@ class xLSTM(nn.Module):
             output_seq, hidden_states[i] = block(output_seq, hidden_states[i])
         
         output_seq = self.output_layer(output_seq[:, -1, :])  # Taking the output of the last time step
+        if torch.isnan(output_seq).any():
+            print("NaN detected in output_seq!")
         output_prob = self.sigmoid(output_seq)
         
         return output_prob, hidden_states
