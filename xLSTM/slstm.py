@@ -50,6 +50,8 @@ class sLSTM(nn.Module):
         Returns:
             tuple: Output sequence and final hidden state.
         """
+        if torch.isnan(input_seq).any():
+            print("slstm.py: Nan detected in input")
         batch_size, seq_length, _ = input_seq.size()
         
         if hidden_state is None:
