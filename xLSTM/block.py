@@ -62,6 +62,8 @@ class xLSTMBlock(nn.Module):
         Returns:
             tuple: Output sequence and final hidden state.
         """
+        if torch.isnan(input_seq).any():
+                print(f"NaN detected input_seq!")
         lstm_output, hidden_state = self.lstm(input_seq, hidden_state)
         if torch.isnan(lstm_output).any():
                 print(f"NaN detected lstm_output!")
