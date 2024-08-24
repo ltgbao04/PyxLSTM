@@ -131,10 +131,12 @@ class sLSTMCell(nn.Module):
         i, f, g, o = gates.chunk(4, 1)
         
         #print(f"Before exp: i={i.mean()}, f={f.mean()}")
-        i = torch.exp(torch.clamp(i, max=50))  # Clamping to avoid overflow
-        f = torch.exp(torch.clamp(f, max=50))
+        # i = torch.exp(torch.clamp(i, max=50))  # Clamping to avoid overflow
+        # f = torch.exp(torch.clamp(f, max=50))
         #print(f"After exp: i={i.mean()}, f={f.mean()}")
-        
+        i = F.softplus(i)
+        f = F.softplus(f)
+
         g = torch.tanh(g)
         o = torch.sigmoid(o)
         
