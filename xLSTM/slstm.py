@@ -124,7 +124,7 @@ class sLSTMCell(nn.Module):
             tuple: New hidden state and cell state.
         """
         # print(f"hx: {hx}")
-        # print(f"input: {input}")
+        print(f"input[:10]: {input[:10]}")
         h, c = hx
         gates = F.linear(input, self.weight_ih, self.bias) + F.linear(h, self.weight_hh)
         
