@@ -123,15 +123,18 @@ class sLSTMCell(nn.Module):
         Returns:
             tuple: New hidden state and cell state.
         """
-        print(f"hx: {hx}")
-        print(f"input: {input}")
+        # print(f"hx: {hx}")
+        # print(f"input: {input}")
         h, c = hx
         gates = F.linear(input, self.weight_ih, self.bias) + F.linear(h, self.weight_hh)
         
         i, f, g, o = gates.chunk(4, 1)
         
-        i = torch.exp(i)  # Exponential input gate
-        f = torch.exp(f)  # Exponential forget gate
+        print(f"Before exp: i={i.mean()}, f={f.mean()}")
+        i = torch.exp(i)
+        f = torch.exp(f)
+        print(f"After exp: i={i.mean()}, f={f.mean()}")
+        
         g = torch.tanh(g)
         o = torch.sigmoid(o)
         
