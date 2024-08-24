@@ -135,5 +135,8 @@ class sLSTMCell(nn.Module):
         
         c = f * c + i * g
         h = o * torch.tanh(c)
-        
+        if torch.isnan(h).any():
+            print("slstm.py: slstmcell: nan in h")
+        if torch.isnan(c).any():
+            print("slstm.py: slstmcell: nan in c")
         return h, c
