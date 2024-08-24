@@ -124,16 +124,16 @@ class sLSTMCell(nn.Module):
             tuple: New hidden state and cell state.
         """
         # print(f"hx: {hx}")
-        print(f"input[:10]: {input[:10]}")
+        # print(f"input[:10]: {input[:10]}")
         h, c = hx
         gates = F.linear(input, self.weight_ih, self.bias) + F.linear(h, self.weight_hh)
         
         i, f, g, o = gates.chunk(4, 1)
         
-        print(f"Before exp: i={i.mean()}, f={f.mean()}")
+        #print(f"Before exp: i={i.mean()}, f={f.mean()}")
         i = torch.exp(torch.clamp(i, max=50))  # Clamping to avoid overflow
         f = torch.exp(torch.clamp(f, max=50))
-        print(f"After exp: i={i.mean()}, f={f.mean()}")
+        #print(f"After exp: i={i.mean()}, f={f.mean()}")
         
         g = torch.tanh(g)
         o = torch.sigmoid(o)
