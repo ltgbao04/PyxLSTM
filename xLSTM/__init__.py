@@ -17,7 +17,7 @@ Date: June 2024
 from .slstm import sLSTM, sLSTMCell
 from .mlstm import mLSTM, mLSTMCell
 from .block import xLSTMBlock
-from .model import xLSTM
+from .model import xLSTM, CNM_xLSTM
 
 __all__ = [
     "sLSTM",
@@ -25,7 +25,8 @@ __all__ = [
     "mLSTM",
     "mLSTMCell",
     "xLSTMBlock",
-    "xLSTM"
+    "xLSTM",
+    "CNN_xLSTM"
 ]
 
 __version__ = "2.0.0"
