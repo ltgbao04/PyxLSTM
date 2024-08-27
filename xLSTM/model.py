@@ -1,84 +1,10 @@
-# """
-# xLSTM: Extended Long Short-Term Memory Model
-
-# This module implements the xLSTM model as described in the paper:
-# "xLSTM: Extended Long Short-Term Memory" by Beck et al. (2024).
-
-# The xLSTM model combines sLSTM and mLSTM blocks in a residual architecture
-# to achieve state-of-the-art performance on various language modeling tasks.
-
-# Author: Mudit Bhargava
-# Date: June 2024
-# """
-
-# import torch
-# import torch.nn as nn
-# from .block import xLSTMBlock
-
-# class xLSTM(nn.Module):
-#     """
-#     xLSTM model implementation.
-
-#     This model uses a combination of sLSTM and mLSTM blocks in a residual architecture.
-
-#     Args:
-#         vocab_size (int): Size of the vocabulary.
-#         embedding_size (int): Size of the token embeddings.
-#         hidden_size (int): Size of the hidden state in LSTM blocks.
-#         num_layers (int): Number of LSTM layers in each block.
-#         num_blocks (int): Number of xLSTM blocks.
-#         dropout (float, optional): Dropout probability. Default: 0.0.
-#         lstm_type (str, optional): Type of LSTM to use ('slstm' or 'mlstm'). Default: 'slstm'.
-#     """
-
-#     def __init__(self, vocab_size, embedding_size, hidden_size, num_layers, num_blocks,
-#                  dropout=0.0, lstm_type="slstm"):
-#         super(xLSTM, self).__init__()
-#         self.vocab_size = vocab_size
-#         self.embedding_size = embedding_size
-#         self.hidden_size = hidden_size
-#         self.num_layers = num_layers
-#         self.num_blocks = num_blocks
-#         self.dropout = dropout
-#         self.lstm_type = lstm_type
-
-#         self.embedding = nn.Embedding(vocab_size, embedding_size)
-#         self.blocks = nn.ModuleList([
-#             xLSTMBlock(embedding_size, hidden_size, num_layers, dropout, lstm_type)
-#             for _ in range(num_blocks)
-#         ])
-#         self.output_layer = nn.Linear(embedding_size, vocab_size)
-
-#     def forward(self, input_seq, hidden_states=None):
-#         """
-#         Forward pass of the xLSTM model.
-
-#         Args:
-#             input_seq (Tensor): Input sequence of token indices.
-#             hidden_states (list of tuples, optional): Initial hidden states for each block. Default: None.
-
-#         Returns:
-#             tuple: Output logits and final hidden states.
-#         """
-#         embedded_seq = self.embedding(input_seq)
-        
-#         if hidden_states is None:
-#             hidden_states = [None] * self.num_blocks
-        
-#         output_seq = embedded_seq
-#         for i, block in enumerate(self.blocks):
-#             output_seq, hidden_states[i] = block(output_seq, hidden_states[i])
-        
-#         output_seq = self.output_layer(output_seq)
-#         return output_seq, hidden_states
-
 import torch
 import torch.nn as nn
 from .block import xLSTMBlock
 
-class xLSTM(nn.Module):
+class CNN_xLSTM(nn.Module):
     """
-    xLSTM model for malware detection.
+    CNN-xLSTM model for malware detection.
 
     Args:
         input_size (int): Size of the input embeddings.
@@ -87,11 +13,13 @@ class xLSTM(nn.Module):
         num_blocks (int): Number of xLSTM blocks.
         dropout (float, optional): Dropout probability. Default: 0.0.
         lstm_type (str, optional): Type of LSTM to use ('slstm' or 'mlstm'). Default: 'slstm'.
+        num_channels (int, optional): Number of channels in the convolutional layer. Default: 32.
+        kernel_size (int, optional): Size of the convolutional kernel. Default: 3.
     """
 
     def __init__(self, input_size, hidden_size, num_layers, num_blocks,
-                 dropout=0.0, lstm_type="slstm"):
-        super(xLSTM, self).__init__()
+                 dropout=0.0, lstm_type="slstm", num_channels=32, kernel_size=3):
+        super(CNN_xLSTM, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.num_layers = num_layers
@@ -99,16 +27,19 @@ class xLSTM(nn.Module):
         self.dropout = dropout
         self.lstm_type = lstm_type
 
+        # Convolutional layer
+        self.conv = nn.Conv1d(in_channels=input_size, out_channels=num_channels, kernel_size=kernel_size, padding=kernel_size//2)
+        
         self.blocks = nn.ModuleList([
-            xLSTMBlock(input_size, hidden_size, num_layers, dropout, lstm_type)
+            xLSTMBlock(num_channels, hidden_size, num_layers, dropout, lstm_type)
             for _ in range(num_blocks)
         ])
-        self.output_layer = nn.Linear(input_size, 1)
+        self.output_layer = nn.Linear(num_channels, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, input_seq, hidden_states=None):
         """
-        Forward pass of the xLSTM model for malware detection.
+        Forward pass of the CNN-xLSTM model for malware detection.
 
         Args:
             input_seq (Tensor): Already embedded input sequence.
@@ -117,10 +48,13 @@ class xLSTM(nn.Module):
         Returns:
             tuple: Output probability and final hidden states.
         """
-        # Check for NaN values in output_seq
+        # Check for NaN values in input_seq
         if torch.isnan(input_seq).any():
             print("NaN detected in input_seq!")
-        output_seq = input_seq
+        
+        # Apply convolutional layer
+        output_seq = self.conv(input_seq.permute(0, 2, 1)).permute(0, 2, 1)
+        
         if hidden_states is None:
             hidden_states = [None] * self.num_blocks
         
