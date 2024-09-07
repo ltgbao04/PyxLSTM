@@ -110,6 +110,7 @@ class CNN_xLSTM(nn.Module):
         Returns:
             tuple: Output probability and final hidden states.
         """
+        print(f"input seq inside model.py: {input_seq.size()}")
         # Check for NaN values in input_seq
         if torch.isnan(input_seq).any():
             print("NaN detected in input_seq!")
