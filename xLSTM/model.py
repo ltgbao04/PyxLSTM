@@ -47,16 +47,20 @@ class xLSTM(nn.Module):
         if torch.isnan(input_seq).any():
             print("NaN detected in input_seq!")
         output_seq = input_seq
+
+        print(f"output seq shape: {output_seq.shape}")
         if hidden_states is None:
             hidden_states = [None] * self.num_blocks
         
         for i, block in enumerate(self.blocks):
             output_seq, hidden_states[i] = block(output_seq, hidden_states[i])
+            print(f"output seq shape inside loop: {output_seq.shape}")
             # Check for NaN values after each block
             if torch.isnan(output_seq).any():
                 print(f"NaN detected after block {i+1}!")
         
         output_seq = self.output_layer(output_seq[:, -1, :])  # Taking the output of the last time step
+        print(f"output seq shape after loop: {output_seq.shape}")
         if torch.isnan(output_seq).any():
             print("NaN detected in output_seq!")
         output_prob = self.sigmoid(output_seq)
