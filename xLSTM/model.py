@@ -97,6 +97,7 @@ class CNN_xLSTM(nn.Module):
             xLSTMBlock(num_channels, hidden_size, num_layers, dropout, lstm_type)
             for _ in range(num_blocks)
         ])
+        self.activation = nn.GELU()
         self.output_layer = nn.Linear(num_channels, 1)
         self.sigmoid = nn.Sigmoid()
 
@@ -126,6 +127,8 @@ class CNN_xLSTM(nn.Module):
             # Check for NaN values after each block
             if torch.isnan(output_seq).any():
                 print(f"NaN detected after block {i+1}!")
+                
+        output_seq = self.activation(output_seq)
         
         output_seq = self.output_layer(output_seq[:, -1, :])  # Taking the output of the last time step
         if torch.isnan(output_seq).any():
