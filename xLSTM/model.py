@@ -118,19 +118,16 @@ class CNN_xLSTM(nn.Module):
         
         # Apply convolutional layer
         output_seq = self.conv(input_seq.permute(0, 2, 1)).permute(0, 2, 1)
-        print(f"output seq shape: {output_seq.shape}")
         if hidden_states is None:
             hidden_states = [None] * self.num_blocks
         
         for i, block in enumerate(self.blocks):
             output_seq, hidden_states[i] = block(output_seq, hidden_states[i])
-            print(f"output seq shape inside loop: {output_seq.shape}")
             # Check for NaN values after each block
             if torch.isnan(output_seq).any():
                 print(f"NaN detected after block {i+1}!")
         
         output_seq = self.output_layer(output_seq[:, -1, :])  # Taking the output of the last time step
-        print(f"output seq shape after loop: {output_seq.shape}")
         if torch.isnan(output_seq).any():
             print("NaN detected in output_seq!")
         output_prob = self.sigmoid(output_seq)
