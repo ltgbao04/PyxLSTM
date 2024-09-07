@@ -94,7 +94,7 @@ class CNN_xLSTM(nn.Module):
         self.lstm_type = lstm_type
 
         # Convolutional layer
-        self.conv = nn.Conv1d(in_channels=input_size, out_channels=num_channels, kernel_size=kernel_size, padding=kernel_size//2, strides=2)
+        self.conv = nn.Conv1d(in_channels=input_size, out_channels=num_channels, kernel_size=kernel_size, padding=kernel_size//2, stride=2)
         
         self.blocks = nn.ModuleList([
             xLSTMBlock(num_channels, hidden_size, num_layers, dropout, lstm_type)
