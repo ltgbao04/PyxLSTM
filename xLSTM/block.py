@@ -47,7 +47,8 @@ class xLSTMBlock(nn.Module):
             raise ValueError(f"Invalid LSTM type: {lstm_type}")
 
         self.norm = nn.LayerNorm(hidden_size)
-        self.activation = nn.GELU()
+        # self.activation = nn.GELU()
+        self.activation = nn.ReLU()
         self.dropout_layer = nn.Dropout(dropout)
         self.proj = nn.Linear(hidden_size, input_size)
 
